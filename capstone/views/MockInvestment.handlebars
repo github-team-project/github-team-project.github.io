@@ -1,0 +1,249 @@
+<link rel="stylesheet" href="../assets/css/main.css">
+<link rel="stylesheet" href="../assets/css/main.css">
+<noscript>
+	<link rel="stylesheet" href="../assets/css/noscript.css">
+</noscript>
+<script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Main -->
+<div id="main">
+
+	<!-- Content -->
+	<section id="content" class="main">
+		<h1><b>거래소(모의투자/자동매매)</b></h1><br />
+		<div class="tradingview-widget-container" style="height:75%; width: 80%; display:inline-block; margin:10px;">
+			<div id="tradingview_1fdf8"></div>
+			<script src="https://s3.tradingview.com/tv.js"></script>
+			<script src="/socket.io/socket.io.js"></script>
+			<script type="text/javascript">
+				const socket = io();
+				let a = new TradingView.widget(
+					{
+						"autosize": true,
+						"symbol": `UPBIT:{{coin}}`,
+						"interval": "3",
+						"timezone": "Asia/Seoul",
+						"theme": "light",
+						"style": "1",
+						"locale": "kr",
+						"toolbar_bg": "#f1f3f6",
+						"enable_publishing": true,
+						"allow_symbol_change": true,
+						"container_id": "tradingview_1fdf8"
+					}
+				);
+				function show() {
+					var valuestr = document.getElementById('krnameaa');
+					var chstr = valuestr.options[valuestr.selectedIndex].id
+					a = new TradingView.widget(
+						{
+							"autosize": true,
+							"symbol": "UPBIT:" + chstr,
+							"interval": "3",
+							"timezone": "Asia/Seoul",
+							"theme": "light",
+							"style": "1",
+							"locale": "kr",
+							"toolbar_bg": "#f1f3f6",
+							"enable_publishing": true,
+							"allow_symbol_change": true,
+							"container_id": "tradingview_1fdf8"
+						}
+					);
+
+
+				}
+			</script>
+
+			<form method='post'>
+				<input type="submit" button style="width:49.7%;height:auto;" value="매수" name="submit"
+					onclick='this.form.action ="/buycoin"'>
+				<input type="submit" button style="width:49.7%;height:auto;" value="매도" name="submit"
+					onclick='this.form.action ="/sellcoin"'>
+
+		</div>
+		<div class="tradingview-check" style="height:auto; width:17%; display:inline-block;">
+			<input type="text" name="coinquantity" id="coinquantity" placeholder="개수 입력" onkeyup="coinquantityCal();">
+			<input type="text" name="pay" id="pay" placeholder="매수 가격" onkeyup="payCal();">
+			<input type="text" name="totalpay" id="totalpay" placeholder="매수 총액" onkeyup="totalpayCal();">
+			<input type="hidden" name="coin" value="BTC-KRW" id="selectcoin">
+		</div>
+		</form>
+	</section>
+	<form method="post">
+		종목 : <input type="text" name="kind" id="kind" placeholder="종목">
+		매수 지점 : <input type="text" name="buypoint" id="buy" placeholder="매수 지점">
+		매도 지점 : <input type="text" name="sellpoint" id="sell" placeholder="매도 지점">
+		<input type="submit" value="시작" name="submit" onclick='this.form.action ="/startm"'>
+		<input type="submit" value="종료" name="submit" onclick='this.form.action ="/stopm"'>
+	</form>
+
+	<!-- 수정 - 테이블 항목에서 코인 이름별 금액에 대한 내용 제거 -->
+	<section id="content2">
+		<span class="tabB">
+			<table class="highlight">
+				<colgroup>
+					<col width="100">
+					<col width="125">
+					<col width="125">
+					<col width="100">
+					<col width="100">
+					<col width="*">
+				</colgroup>
+				<thead>
+					<tr>
+						<th colspan="3"><a href="#">한글명</a></th>
+						<th><a href="#">현재가</a></th>
+						<th><a href="#">전일대비</a></th>
+						<th><a href="#">거래대금</a></th>
+					</tr>
+				</thead>
+			</table>
+			<div class="scrollB">
+				<div style="position: relative; overflow: hidden; width: 100%; height: 400px;">
+					<div
+						style="position: absolute; inset: 0px; overflow: scroll; margin-right: -17px; margin-bottom: -17px;">
+						<table class="highlight borderNone" name="krnamea" id="cointable">
+
+							<colgroup>
+								<col width="26">
+								<col width="26">
+								<col width="94">
+								<col width="98">
+								<col width="58">
+								<col width="*">
+							</colgroup>
+							<tbody name="krname">
+								{{#each market}}
+								<tr class="up" onclick="myFunction(this)">
+									<td><span class="bookmark">즐겨찾기</a></span></td>
+									<td class="cAlign"><a href="{{this}}">
+											<div class="bar up"><span class="line"
+													style="top: 13.2px; height: 0.6px;">-</span><span class="box"
+													style="top: 13.2px; height: 1px;">-</span>
+											</div>
+										</a></td>
+									<td class="tit" onClick="location.href='{{this}}'" onchange="show()">
+										<strong value="{{this}}">{{this}}</strong></a><em>
+									<td>
+									</td>
+									<td class="price"><strong></strong><em>
+											<i></i></em><span class=""></span></td>
+									<td class="percent">
+										<p></p>
+									</td>
+									<td class="rAlign">
+										<p class=""></p><em><i></i></em>
+									</td>
+								</tr>
+								{{/each}}
+							</tbody>
+						</table>
+					</div>
+					<div
+						style="position: absolute; height: 6px; right: 2px; bottom: 2px; left: 2px; border-radius: 3px;">
+						<div
+							style="position: relative; display: block; height: 100%; cursor: pointer; border-radius: inherit; background-color: rgba(0, 0, 0, 0.2); width: 0px;">
+						</div>
+					</div>
+					<div style="position: absolute; width: 6px; right: 2px; bottom: 2px; top: 2px; border-radius: 3px;">
+						<div
+							style="position: relative; display: block; width: 100%; cursor: pointer; border-radius: inherit; background-color: rgba(0, 0, 0, 0.2); height: 108px; transform: translateY(0px);">
+						</div>
+					</div>
+				</div>
+			</div>
+		</span>
+	</section>
+	</form>
+	</section>
+
+</div>
+</div>
+
+
+
+<script>
+	var coinquantityCal = () => {
+		var coinquantity = document.getElementById('coinquantity').value;
+		var pay = document.getElementById('pay').value;
+		var totalpay = document.getElementById('totalpay');
+		totalpay.value = (coinquantity * pay).toFixed(8)
+	};
+	var totalpayCal = () => {
+		var coinquantity = document.getElementById('coinquantity');
+		var pay = document.getElementById('pay').value;
+		var totalpay = document.getElementById('totalpay').value;
+		coinquantity.value = (totalpay / pay).toFixed(8)
+	};
+	var payCal = () => {
+		var coinquantity = document.getElementById('coinquantity').value;
+		var pay = document.getElementById('pay').value;
+		var totalpay = document.getElementById('totalpay');
+		totalpay.value = (coinquantity * pay).toFixed(8)
+	};
+	var selectcoin = document.getElementById('selectcoin');
+	let kind = document.getElementById('kind')
+	var pathname = window.location.pathname.split('/');
+	let replacecoin = pathname[2].replace("KRW", "-KRW").split('-').reverse().join('-')
+	selectcoin.value = pathname[2];
+	kind.value = replacecoin
+</script>
+
+
+
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/jquery.scrollex.min.js"></script>
+<script src="../assets/js/jquery.scrolly.min.js"></script>
+<script src="../assets/js/browser.min.js"></script>
+<script src="../assets/js/breakpoints.min.js"></script>
+<script src="../assets/js/util.js"></script>
+<script src="../assets/js/main.js"></script>
+
+
+<script language="javascript" type="text/javascript">
+	let recvData = "";
+	function tradeServerConnect(codes) {
+		let coin
+		let ws = new WebSocket('wss://api.upbit.com/websocket/v1');
+		ws.binaryType = "arraybuffer";
+		ws.onopen = function (e) {
+			console.log('trade websocket is connected')
+			const str = `[{"ticket":"find"},{"type":"trade","codes":["${codes}"]}]`;
+			ws.send(str);
+		};
+		ws.onmessage = function (data) {
+			try {
+				var enc = new TextDecoder("utf-8");
+				let arr = recvData = new Uint8Array(data.data);
+				recvData = enc.decode(data.data)
+				recvData = JSON.parse(recvData)
+			} catch (e) {
+				console.log(e)
+			}
+		};
+	}
+
+	async function start() {
+		var pathname = window.location.pathname.split('/');
+		let asd = pathname[2]
+		asd = asd.replace("KRW", "-KRW").split('-').reverse().join('-')
+		console.log(asd)
+		tradeServerConnect(asd)
+		function print() {
+			console.log('recvData', recvData['trade_price']);
+			let setpay = document.getElementById('pay')
+			setpay.value = recvData['trade_price']
+
+			var coinquantity = document.getElementById('coinquantity').value;
+			var pay = document.getElementById('pay').value;
+			var totalpay = document.getElementById('totalpay');
+			totalpay.value = (coinquantity * pay).toFixed(8)
+		}
+		setInterval(print, 1000);
+
+	}
+	start()
+
+
+</script>
